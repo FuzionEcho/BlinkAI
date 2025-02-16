@@ -1,0 +1,9 @@
+{
+    "version" : 2,
+    "builds" : [
+        {"src" : "morse.py", "use" : "@vercel/python"}
+    ],
+    "routes" : [
+        {"src" : "/morse", "dest" : "morse.py"}
+    ]
+}

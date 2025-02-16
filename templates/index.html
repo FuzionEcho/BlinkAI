@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Morse Code Studio</title>
+    <title>Blink AI</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
@@ -64,6 +64,25 @@
           transform: translateX(0);
           opacity: 1;
         }
+      }
+
+      @keyframes blink-cursor {
+        0%,
+        100% {
+          opacity: 1;
+          color: var(--accent);
+          text-shadow: 0 0 10px var(--accent);
+        }
+        50% {
+          opacity: 0.3;
+          color: var(--primary);
+          text-shadow: none;
+        }
+      }
+
+      .blink-cursor {
+        animation: blink-cursor 1.2s infinite;
+        font-style: italic;
       }
 
       @keyframes fadeIn {
@@ -323,31 +342,30 @@
         font-family: monospace;
         font-size: 1.5rem;
         padding: 1.5rem;
-        background: rgba(236, 72, 153, 0.1); /* Light pink background */
-        border: 2px solid #ec4899; /* Pink border */
+        background: rgba(236, 72, 153, 0.1);
+        border: 2px solid #ec4899;
         border-radius: 12px;
         overflow-wrap: break-word;
         min-height: 120px;
         max-height: 200px;
         overflow-y: auto;
-        color: #ec4899; /* Pink text */
+        color: #ec4899;
         box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
         transition: all 0.3s ease;
       }
-      
+
       .morse-display:empty {
         display: flex;
         align-items: center;
         justify-content: center;
         color: rgba(236, 72, 153, 0.5);
       }
-      
+
       .morse-display:empty::before {
         content: "Waiting for message...";
         font-style: italic;
       }
 
-      /* New Chat Styles */
       .chat-container {
         background: var(--panel);
         border-radius: var(--border-radius);
@@ -474,7 +492,7 @@
 
     <div class="container">
       <header class="header">
-        <h1 class="title">Morse Code Studio</h1>
+        <h1 class="title">Bl<span class="blink-cursor">i</span>nk AI</h1>
         <p class="subtitle">
           Advanced eye-tracking communication system with Mistral AI integration
         </p>
@@ -530,120 +548,121 @@
         <aside class="panel">
           <h2 class="panel-title">Morse Code Reference</h2>
           <div class="morse-grid">
-              <div class="morse-item">
-                <span class="letter">A</span>
-                <span class="code">• —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">B</span>
-                <span class="code">— • • •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">C</span>
-                <span class="code">— • — •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">D</span>
-                <span class="code">— • •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">E</span>
-                <span class="code">•</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">F</span>
-                <span class="code">• • — •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">G</span>
-                <span class="code">— — •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">H</span>
-                <span class="code">• • • •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">I</span>
-                <span class="code">• •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">J</span>
-                <span class="code">• — — —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">K</span>
-                <span class="code">— • —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">L</span>
-                <span class="code">• — • •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">M</span>
-                <span class="code">— —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">N</span>
-                <span class="code">— •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">O</span>
-                <span class="code">— — —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">P</span>
-                <span class="code">• — — •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">Q</span>
-                <span class="code">— — • —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">R</span>
-                <span class="code">• — •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">S</span>
-                <span class="code">• • •</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">T</span>
-                <span class="code">—</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">U</span>
-                <span class="code">• • —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">V</span>
-                <span class="code">• • • —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">W</span>
-                <span class="code">• — —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">X</span>
-                <span class="code">— • • —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">Y</span>
-                <span class="code">— • — —</span>
-              </div>
-              <div class="morse-item">
-                <span class="letter">Z</span>
-                <span class="code">— — • •</span>
-              </div>
+            <div class="morse-item">
+              <span class="letter">A</span>
+              <span class="code">• —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">B</span>
+              <span class="code">— • • •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">C</span>
+              <span class="code">— • — •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">D</span>
+              <span class="code">— • •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">E</span>
+              <span class="code">•</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">F</span>
+              <span class="code">• • — •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">G</span>
+              <span class="code">— — •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">H</span>
+              <span class="code">• • • •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">I</span>
+              <span class="code">• •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">J</span>
+              <span class="code">• — — —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">K</span>
+              <span class="code">— • —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">L</span>
+              <span class="code">• — • •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">M</span>
+              <span class="code">— —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">N</span>
+              <span class="code">— •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">O</span>
+              <span class="code">— — —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">P</span>
+              <span class="code">• — — •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">Q</span>
+              <span class="code">— — • —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">R</span>
+              <span class="code">• — •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">S</span>
+              <span class="code">• • •</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">T</span>
+              <span class="code">—</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">U</span>
+              <span class="code">• • —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">V</span>
+              <span class="code">• • • —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">W</span>
+              <span class="code">• — —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">X</span>
+              <span class="code">— • • —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">Y</span>
+              <span class="code">— • — —</span>
+            </div>
+            <div class="morse-item">
+              <span class="letter">Z</span>
+              <span class="code">— — • •</span>
+            </div>
           </div>
           <div class="morse-legend">
             <div class="legend-item">
               <span class="symbol">•</span>
               <span class="desc">Short Blink (Dot)</span>
             </div>
-            <div <div class="legend-item">
+            <div class="legend-item">
               <span class="symbol">—</span>
               <span class="desc">Long Blink (Dash)</span>
             </div>
+          </div>
         </aside>
       </main>
 
