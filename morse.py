@@ -1,10 +1,10 @@
 from time import perf_counter
-import numpy as np
+#import numpy as np
 import cv2
 import cvzone
 from cvzone.FaceMeshModule import FaceMeshDetector
 from cvzone.PlotModule import LivePlot
-import time
+#import time
 from flask import Flask, render_template, Response, jsonify
 import requests
 
