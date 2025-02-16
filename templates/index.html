@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morse Code Studio</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #4338ca;
+        --accent: #ec4899;
+        --background: #0f172a;
+        --text: #f8fafc;
+        --panel: #1e293b;
+        --border-radius: 16px;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      .gradient-bg {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        opacity: 0.15;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 4rem;
+        animation: fadeIn 1s ease-out;
+      }
+
+      .title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 30px rgba(37, 99, 235, 0.5);
+      }
+
+      .subtitle {
+        font-size: 1.5rem;
+        color: #94a3b8;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .center-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        height: fit-content;
+      }
+
+      .message-panel {
+        background: var(--panel);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      .video-container {
+        position: relative;
+        background: var(--panel);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transition: transform 0.3s ease;
+        width: 100%;
+        height: 480px;
+      }
+
+      .video-container:hover {
+        transform: scale(1.02);
+      }
+
+      #videoFeed {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        border-radius: calc(var(--border-radius) - 4px);
+        background: var(--panel);
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 1rem;
+        z-index: 10;
+        padding: 0.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 9999px;
+        backdrop-filter: blur(8px);
+      }
+
+      .btn {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+      }
+
+      .btn-secondary {
+        background: #64748b;
+      }
+
+      .btn-warning {
+        background: #f59e0b;
+      }
+
+      .panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #e2e8f0;
+      }
+
+      .morse-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+      }
+
+      .morse-grid::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .morse-grid::-webkit-scrollbar-track {
+        background: #1e293b;
+        border-radius: 3px;
+      }
+
+      .morse-grid::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 3px;
+      }
+
+      .morse-item {
+        background: #2d3748;
+        padding: 0.75rem;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s ease;
+      }
+
+      .morse-item:hover {
+        background: #3f495e;
+        transform: translateY(-2px);
+      }
+
+      .morse-item .letter {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .morse-item .code {
+        font-family: monospace;
+        color: #94a3b8;
+      }
+
+      .morse-legend {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #3f495e;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .legend-item .symbol {
+        font-size: 1.5rem;
+        color: var(--primary);
+        font-weight: bold;
+      }
+
+      .legend-item .desc {
+        color: #94a3b8;
+        font-size: 0.875rem;
+      }
+
+      .morse-display {
+        font-family: monospace;
+        font-size: 1.5rem;
+        padding: 1.5rem;
+        background: rgba(236, 72, 153, 0.1); /* Light pink background */
+        border: 2px solid #ec4899; /* Pink border */
+        border-radius: 12px;
+        overflow-wrap: break-word;
+        min-height: 120px;
+        max-height: 200px;
+        overflow-y: auto;
+        color: #ec4899; /* Pink text */
+        box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+        transition: all 0.3s ease;
+      }
+      
+      .morse-display:empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(236, 72, 153, 0.5);
+      }
+      
+      .morse-display:empty::before {
+        content: "Waiting for message...";
+        font-style: italic;
+      }
+
+      /* New Chat Styles */
+      .chat-container {
+        background: var(--panel);
+        border-radius: var(--border-radius);
+        margin-top: 2rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .chat-header {
+        background: linear-gradient(to right, #6366f1, #8b5cf6);
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chat-header h2 {
+        color: white;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .chat-messages {
+        padding: 1.5rem;
+        max-height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .message {
+        max-width: 80%;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        margin: 0.5rem 0;
+      }
+
+      .message.user {
+        background: var(--primary);
+        color: white;
+        align-self: flex-end;
+      }
+
+      .message.assistant {
+        background: #2d3748;
+        color: white;
+        align-self: flex-start;
+      }
+
+      .floating-stats {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        background: rgba(17, 24, 39, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 0.75rem;
+        border-radius: 12px;
+        gap: 0.75rem;
+        scale: 0.85;
+        display: flex;
+      }
+
+      .stat-item {
+        min-width: 60px;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .stat-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      @media (max-width: 1200px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .video-container {
+          height: 360px;
+        }
+
+        .floating-stats {
+          position: static;
+          margin-top: 2rem;
+          animation: none;
+        }
+
+        .chat-messages {
+          max-height: 300px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .title {
+          font-size: 2.5rem;
+        }
+
+        .controls {
+          flex-direction: column;
+          width: 90%;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-bg"></div>
+
+    <div class="container">
+      <header class="header">
+        <h1 class="title">Morse Code Studio</h1>
+        <p class="subtitle">
+          Advanced eye-tracking communication system with Mistral AI integration
+        </p>
+      </header>
+
+      <main class="main-content">
+        <div class="center-column">
+          <section class="video-container">
+            <img
+              id="videoFeed"
+              src="{{ url_for('video_feed') }}"
+              alt="Video feed"
+            />
+            <div class="controls">
+              <button onclick="startDetection()" class="btn btn-primary">
+                <i class="fas fa-play"></i> Start Detection
+              </button>
+              <button
+                onclick="togglePause()"
+                class="btn btn-secondary"
+                id="pauseButton"
+              >
+                <i class="fas fa-pause"></i> Pause
+              </button>
+              <button onclick="resetDetection()" class="btn">
+                <i class="fas fa-redo"></i> Reset
+              </button>
+              <button onclick="processMessageWithAI()" class="btn btn-primary">
+                <i class="fas fa-robot"></i> Process with AI
+              </button>
+            </div>
+          </section>
+
+          <div class="message-panel">
+            <h2 class="panel-title">Current Message</h2>
+            <div class="morse-display" id="currentMessage"></div>
+          </div>
+
+          <!-- AI Chat Interface -->
+          <div class="chat-container">
+            <div class="chat-header">
+              <h2>
+                <i class="fas fa-brain"></i>
+                Mistral AI Chat
+              </h2>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+              <!-- Messages will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <h2 class="panel-title">Morse Code Reference</h2>
+          <div class="morse-grid">
+              <div class="morse-item">
+                <span class="letter">A</span>
+                <span class="code">• —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">B</span>
+                <span class="code">— • • •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">C</span>
+                <span class="code">— • — •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">D</span>
+                <span class="code">— • •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">E</span>
+                <span class="code">•</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">F</span>
+                <span class="code">• • — •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">G</span>
+                <span class="code">— — •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">H</span>
+                <span class="code">• • • •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">I</span>
+                <span class="code">• •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">J</span>
+                <span class="code">• — — —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">K</span>
+                <span class="code">— • —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">L</span>
+                <span class="code">• — • •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">M</span>
+                <span class="code">— —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">N</span>
+                <span class="code">— •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">O</span>
+                <span class="code">— — —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">P</span>
+                <span class="code">• — — •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">Q</span>
+                <span class="code">— — • —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">R</span>
+                <span class="code">• — •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">S</span>
+                <span class="code">• • •</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">T</span>
+                <span class="code">—</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">U</span>
+                <span class="code">• • —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">V</span>
+                <span class="code">• • • —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">W</span>
+                <span class="code">• — —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">X</span>
+                <span class="code">— • • —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">Y</span>
+                <span class="code">— • — —</span>
+              </div>
+              <div class="morse-item">
+                <span class="letter">Z</span>
+                <span class="code">— — • •</span>
+              </div>
+          </div>
+          <div class="morse-legend">
+            <div class="legend-item">
+              <span class="symbol">•</span>
+              <span class="desc">Short Blink (Dot)</span>
+            </div>
+            <div <div class="legend-item">
+              <span class="symbol">—</span>
+              <span class="desc">Long Blink (Dash)</span>
+            </div>
+        </aside>
+      </main>
+
+      <div class="floating-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="blinkCount">0</div>
+          <div class="stat-label">Blinks</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="accuracy">100%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="wpm">0</div>
+          <div class="stat-label">WPM</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let blinkCount = 0;
+      let startTime = null;
+      let isPaused = false;
+      let currentMessage = "";
+      let conversation = [];
+
+      function startMessagePolling() {
+        setInterval(() => {
+          if (!isPaused) {
+            fetch("/get_current_message")
+              .then((response) => response.json())
+              .then((data) => {
+                const display = document.getElementById("currentMessage");
+                display.textContent = data.word + data.morse;
+                display.scrollTop = display.scrollHeight;
+
+                // Update conversation if changed
+                if (
+                  JSON.stringify(conversation) !==
+                  JSON.stringify(data.conversation)
+                ) {
+                  conversation = data.conversation || [];
+                  updateChatMessages();
+                }
+
+                if (data.word !== currentMessage) {
+                  currentMessage = data.word;
+                  updateStats();
+                }
+              })
+              .catch((error) => console.error("Error:", error));
+          }
+        }, 100);
+      }
+
+      function updateChatMessages() {
+        const chatMessages = document.getElementById("chatMessages");
+        chatMessages.innerHTML = "";
+
+        conversation.forEach((msg) => {
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `message ${msg.role}`;
+          messageDiv.textContent = msg.content;
+          chatMessages.appendChild(messageDiv);
+        });
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function processMessageWithAI() {
+        const currentMessage =
+          document.getElementById("currentMessage").textContent;
+        if (!currentMessage) return;
+
+        // Show processing state
+        const processButton =
+          document.querySelector(".btn i.fa-robot").parentElement;
+        processButton.disabled = true;
+        processButton.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Processing';
+
+        fetch("/process_message", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              console.log("AI Response received");
+            } else {
+              console.error("Error processing message:", data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error))
+          .finally(() => {
+            // Reset button state
+            processButton.disabled = false;
+            processButton.innerHTML =
+              '<i class="fas fa-robot"></i> Process with AI';
+          });
+      }
+
+      function startDetection() {
+        fetch("/start", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Detection started:", data);
+            document.querySelector(".btn-primary").style.background = "#10b981";
+            startTracking();
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function resetDetection() {
+        fetch("/reset", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Detection reset:", data);
+            // Reset start detection button
+            const startButton = document.querySelector(".btn-primary");
+            startButton.style.background = "var(--primary)";
+
+            // Reset pause button
+            const pauseButton = document.getElementById("pauseButton");
+            pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            pauseButton.classList.remove("btn-warning");
+            pauseButton.classList.add("btn-secondary");
+
+            // Reset conversation
+            conversation = [];
+            updateChatMessages();
+
+            resetStats();
+            clearMessages();
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function togglePause() {
+        fetch("/toggle_pause", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            isPaused = data.status === "paused";
+            const pauseButton = document.getElementById("pauseButton");
+
+            if (isPaused) {
+              pauseButton.innerHTML = '<i class="fas fa-play"></i> Resume';
+              pauseButton.classList.add("btn-warning");
+              document.querySelector(".btn-primary").style.background =
+                "#64748b";
+            } else {
+              pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+              pauseButton.classList.remove("btn-warning");
+              document.querySelector(".btn-primary").style.background =
+                "#10b981";
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function startTracking() {
+        if (!startTime) {
+          startTime = Date.now();
+        }
+        startMessagePolling();
+      }
+
+      function resetStats() {
+        blinkCount = 0;
+        startTime = null;
+        document.getElementById("blinkCount").textContent = "0";
+        document.getElementById("wpm").textContent = "0";
+        document.getElementById("accuracy").textContent = "100%";
+      }
+
+      function clearMessages() {
+        currentMessage = "";
+        document.getElementById("currentMessage").textContent = "";
+      }
+
+      function updateStats() {
+        if (!startTime) {
+          startTime = Date.now();
+        }
+
+        blinkCount++;
+        document.getElementById("blinkCount").textContent = blinkCount;
+
+        const timeElapsed = (Date.now() - startTime) / 1000 / 60; // in minutes
+        const wpm = Math.round(blinkCount / 5 / timeElapsed) || 0;
+        document.getElementById("wpm").textContent = wpm;
+      }
+
+      // Add keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "s" && e.ctrlKey) {
+          e.preventDefault();
+          startDetection();
+        } else if (e.key === "r" && e.ctrlKey) {
+          e.preventDefault();
+          resetDetection();
+        } else if (e.key === "Enter" && e.ctrlKey) {
+          e.preventDefault();
+          processMessageWithAI();
+        } else if (
+          e.key === " " &&
+          !e.repeat &&
+          !e.target.matches("input, textarea")
+        ) {
+          e.preventDefault();
+          togglePause();
+        }
+      });
+    </script>
+  </body>
+</html>
